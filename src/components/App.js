@@ -8,43 +8,37 @@ import { CATEGORIES, TASKS } from "../data";
 // console.log({ CATEGORIES, TASKS });
 
 function App() {
-  const [filteredTasks, setFilteredTasks] = useState(TASKS);
   const [tasks, setTasks] = useState(TASKS);
   const [selectedCategory, setSelectedCategory] = useState("All");
 
-  function handleCategoryChange(category) {
-    setSelectedCategory(category)
-    
-    if (category === "All") {
-      setFilteredTasks(tasks);
-    } else {
-      const filtered = tasks.filter((task) => task.category === category);
-      setFilteredTasks(filtered);
-    }
+  function handleDelete(task) {
+    const taskFilter = [...tasks].filter(item => {
+      return item.text !== task.text
+    })
+    setTasks(taskFilter)
   }
 
-  function handleTaskFormSubmit(newTask) {
-    setTasks((prevTasks) => [...prevTasks, newTask]);
-    
 
-    if (selectedCategory === "All" || selectedCategory === newTask.category) {
-      setFilteredTasks((prevTasks) => [...prevTasks, newTask]);
+  function handleCategoryChange(item) {
+    setSelectedCategory(item)
   }
-}
-function getFilteredTasks() {
-  if (selectedCategory === "All") {
-    return tasks;
-  } else {
-    return tasks.filter((task) => task.category === selectedCategory);
+  
+  
+  function handleTaskFormSubmit(task) {
+    setTasks([...tasks, task])
   }
 
-}
+
+  let filteredTasks = [...tasks].filter(item => {
+    return item.category === selectedCategory || selectedCategory === "All" 
+  })
+
   return (
     <div className="App">
       <h2>My tasks</h2>
-      <CategoryFilter categories={CATEGORIES} filteredTask={filteredTasks} onCategoryChange={handleCategoryChange}/>
-      <NewTaskForm key={tasks.text} categories={CATEGORIES} onTaskFormSubmit={handleTaskFormSubmit} />
-      <TaskList tasks={getFilteredTasks()} />
+      <CategoryFilter selectedCategory={selectedCategory} categories={CATEGORIES} handleCategoryChange={handleCategoryChange}/>
+      <NewTaskForm categories={CATEGORIES} onTaskFormSubmit={handleTaskFormSubmit}/>
+      <TaskList tasks={filteredTasks} categories={CATEGORIES} handleDelete={handleDelete}/>
     </div>
   );
 }
