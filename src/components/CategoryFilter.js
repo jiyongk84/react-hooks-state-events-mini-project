@@ -6,7 +6,9 @@ function CategoryFilter( {categories, onCategoryChange}) {
 function handleCategoryChange(category) {
     setSelectedCategory(category);
     onCategoryChange(category);
+    
   }
+  
 return (
     <div className="categories">
       <h5>Category filters</h5>

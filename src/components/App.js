@@ -8,29 +8,43 @@ import { CATEGORIES, TASKS } from "../data";
 // console.log({ CATEGORIES, TASKS });
 
 function App() {
-
-
-  const [newTasks, setNewTasks] = useState("")
   const [filteredTasks, setFilteredTasks] = useState(TASKS);
+  const [tasks, setTasks] = useState(TASKS);
+  const [selectedCategory, setSelectedCategory] = useState("All");
 
-  const handleCategoryChange = (category) => {
-    if (category === 'All') {
-      setFilteredTasks(TASKS);
+  function handleCategoryChange(category) {
+    setSelectedCategory(category)
+    
+    if (category === "All") {
+      setFilteredTasks(tasks);
     } else {
-      const filtered = TASKS.filter((task) => task.category === category);
+      const filtered = tasks.filter((task) => task.category === category);
       setFilteredTasks(filtered);
     }
   }
-  
-  const handleTaskFormSubmit = () => {
-    setFilteredTasks([...TASKS, newTasks]);
-  };
+
+  function handleTaskFormSubmit(newTask) {
+    setTasks((prevTasks) => [...prevTasks, newTask]);
+    
+
+    if (selectedCategory === "All" || selectedCategory === newTask.category) {
+      setFilteredTasks((prevTasks) => [...prevTasks, newTask]);
+  }
+}
+function getFilteredTasks() {
+  if (selectedCategory === "All") {
+    return tasks;
+  } else {
+    return tasks.filter((task) => task.category === selectedCategory);
+  }
+
+}
   return (
     <div className="App">
       <h2>My tasks</h2>
-      <CategoryFilter categories={CATEGORIES} tasks={TASKS} onCategoryChange={handleCategoryChange}/>
-      <NewTaskForm categories={CATEGORIES} tasks={TASKS} onTaskFormSubmit={handleTaskFormSubmit}/>
-      <TaskList filteredTasks={filteredTasks} setNewTasks={setNewTasks}/>
+      <CategoryFilter categories={CATEGORIES} filteredTask={filteredTasks} onCategoryChange={handleCategoryChange}/>
+      <NewTaskForm key={tasks.text} categories={CATEGORIES} onTaskFormSubmit={handleTaskFormSubmit} />
+      <TaskList tasks={getFilteredTasks()} />
     </div>
   );
 }

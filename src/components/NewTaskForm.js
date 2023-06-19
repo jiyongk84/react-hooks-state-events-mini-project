@@ -3,7 +3,7 @@ import React, { useState } from "react";
 
 function NewTaskForm( {categories, onTaskFormSubmit} ) {
   const [text, setText] = useState("");
-  const [category, setCategory] = useState(categories[0]);
+  const [category, setCategory] = useState(categories.length > 0 ? categories[0] : "");
 
  
   function handleTaskTextChange(event) {
@@ -22,8 +22,8 @@ function NewTaskForm( {categories, onTaskFormSubmit} ) {
     };
     onTaskFormSubmit(newTask);
     setText("");
-    setCategory(categories[0]);
-    console.log(newTask)
+    setCategory(categories.length > 0 ? categories[0] : "");
+    
   };
 
   return (
@@ -36,7 +36,9 @@ function NewTaskForm( {categories, onTaskFormSubmit} ) {
         Category
         <select name="category" value={category} onChange={handleCategoryChange}>
           {/* render <option> elements for each category here */}
-          {categories.filter((category) => category !== 'All')
+          {categories.length > 0 && 
+          categories
+          .filter((category) => category !== 'All')
           .map((category) => (
             <option key={category} value={category}>
               {category}
